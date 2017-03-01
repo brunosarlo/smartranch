@@ -1,33 +1,17 @@
-# This code would like to be GPLv3 (need reviewing)
-
 #include "TimeAlarms.h"
 #include "MQTT.h"
 // #undef now()
-
-SYSTEM_MODE(SEMI_AUTOMATIC);
-SYSTEM_THREAD(ENABLED);
-
-# Personal vars
-
-#define led_pin D7
-#define valvula_plantines_pin D1
-#define luces_general_pin D2
-#define dsl_pin D3
-#define valvula_pin D4
-
-const uint32_t blink_auth_token = 000000000000000000000000
-
-String wifi_user = "user";
-String wifi_pass = "pass";
-
 
 //#define BLYNK_DEBUG       // Uncomment this to see debug prints
 #define BLYNK_PRINT Serial
 #include "blynk.h"
 
+SYSTEM_MODE(SEMI_AUTOMATIC);
+SYSTEM_THREAD(ENABLED);
+
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = blink_auth_token;
+char auth[] = "123";
 
 // Attach a Button widget (mode: Switch) to the Digital pin 7 - and control the built-in blue led.
 // Attach a Graph widget to Analog pin 1
@@ -35,8 +19,6 @@ char auth[] = blink_auth_token;
 
 WidgetTable table;
 BLYNK_ATTACH_WIDGET(table, V1);
-
-
 
 // Static IP connection
 //Global variables
@@ -52,7 +34,7 @@ const uint32_t msRetryTime  =   30000; // stop trying after 30sec
 const uint32_t dslStartupTime  =   60000; // let dsl start up before connecting
 int connectRetry = 0; // reintentos de conectar antes de apagar router
 
-bool retryRunning = false;
+bool   retryRunning = false;
 
 Timer retryTimer(msRetryDelay, retryConnect);  // timer to retry connecting
 Timer stopTimer(msRetryTime, stopConnect);     // timer to stop a long running try
@@ -70,6 +52,12 @@ Timer riegoLargoTimer(mstiempoRiegoLargo, cerrarRiego);
 
 AlarmID_t alarm1;
 
+#define led_pin D7
+#define valvula_plantines_pin D1
+#define luces_general_pin D2
+#define dsl_pin D3
+#define valvula_pin D4
+
 void callback(char* topic, byte* payload, unsigned int length);
 
 /**
@@ -82,7 +70,7 @@ void callback(char* topic, byte* payload, unsigned int length);
 // byte server[] = { 192,168,1,100 };
 // MQTT client(server, 1883, callback);
 
-MQTT client("myserver.com", 1883, callback);
+MQTT client("example.com", 1883, callback);
 
 String PROJECT_TOPIC  =				"smartranch/";
 String STATUS	=  			"smartranch/status";
@@ -142,8 +130,6 @@ void setup() {
     // Alarm.alarmRepeat(14,00,0, riegoCorto);
     // Alarm.alarmRepeat(16,00,0, riegoCorto);
     Alarm.alarmRepeat(18,00,0, riegoLargo);
-    // Alarm.alarmRepeat(20,00,0, riegoLargo);
-    // Alarm.alarmRepeat(1,27,0, riegoLargo);
 
     // read wifi .INI and connect to network
     networkConnect();
@@ -259,8 +245,8 @@ void switchDsl(){
 
 void networkConnect()
 {
-  char networkSSID[33] = "";
-  char networkPass[65] = "";
+  char networkSSID[33] = "user";
+  char networkPass[65] = "pass";
 
   // WLAN_SEC_UNSEC = 0
   // WLAN_SEC_WEP = 1
